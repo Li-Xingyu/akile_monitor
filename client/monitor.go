@@ -2,18 +2,19 @@ package main
 
 import (
 	"akile_monitor/client/model"
+	"context"
 	"fmt"
+	"log"
+	"runtime"
+	"strconv"
+	"time"
+
+	"github.com/docker/docker/client"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/host"
 	"github.com/shirou/gopsutil/v3/load"
 	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/shirou/gopsutil/v3/net"
-	"log"
-	"runtime"
-	"strconv"
-	"time"
-	"github.com/docker/docker/client"
-	"context"
 )
 
 func GetState() *model.HostState {
@@ -58,6 +59,7 @@ func GetState() *model.HostState {
 
 	ret.NetInTransfer, ret.NetOutTransfer = netInTransfer, netOutTransfer
 	ret.NetInSpeed, ret.NetOutSpeed = netInSpeed, netOutSpeed
+	ret.NetInIp = netInIp
 
 	return &ret
 
@@ -83,20 +85,20 @@ func GetHost() *model.Host {
 		// 创建 Docker 客户端
 		cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 		if err != nil {
-				log.Println("Failed to create Docker client:", err)
+			log.Println("Failed to create Docker client:", err)
 		} else {
-				defer cli.Close()
+			defer cli.Close()
 
-				// 获取 Docker 信息
-				info, err := cli.Info(context.Background())
-				if err != nil {
-						log.Println("Failed to get Docker info:", err)
-				} else {
-						// 更新宿主机信息
-						ret.Platform = info.OperatingSystem
-						ret.PlatformVersion = ""
-						ret.Arch = info.Architecture
-				}
+			// 获取 Docker 信息
+			info, err := cli.Info(context.Background())
+			if err != nil {
+				log.Println("Failed to get Docker info:", err)
+			} else {
+				// 更新宿主机信息
+				ret.Platform = info.OperatingSystem
+				ret.PlatformVersion = ""
+				ret.Arch = info.Architecture
+			}
 		}
 	}
 
@@ -123,11 +125,21 @@ func GetHost() *model.Host {
 
 var (
 	netInSpeed, netOutSpeed, netInTransfer, netOutTransfer, lastUpdateNetStats uint64
+	netInIp                                                                    string
 )
 
 // TrackNetworkSpeed NIC监控，统计流量与速度
 func TrackNetworkSpeed() {
 	var innerNetInTransfer, innerNetOutTransfer uint64
+	var innerIp string
+	np, err := net.Interfaces()
+	if err == nil {
+		for _, v := range np {
+			if v.Name == cfg.NetName {
+				innerIp = v.Addrs[0].Addr
+			}
+		}
+	}
 	nc, err := net.IOCounters(true)
 	if err == nil {
 		for _, v := range nc {
@@ -145,7 +157,7 @@ func TrackNetworkSpeed() {
 		netInTransfer = innerNetInTransfer
 		netOutTransfer = innerNetOutTransfer
 		lastUpdateNetStats = now
-
+		netInIp = innerIp
 	}
 }
 

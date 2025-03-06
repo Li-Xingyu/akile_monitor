@@ -12,6 +12,7 @@ type HostState struct {
 	Load1          float64
 	Load5          float64
 	Load15         float64
+	NetInIp        string
 }
 
 type Host struct {
