@@ -41,7 +41,7 @@ function update_monitor_fe() {
     # 下载到临时目录
     echo "下载新版本..."
     cd "$TEMP_DIR"
-    wget -O frontend.zip https://github.com/akile-network/akile_monitor_fe/releases/download/v.0.0.2/akile_monitor_fe.zip
+    wget -O frontend.zip https://github.com/Li-Xingyu/akile_monitor_fe/releases/download/v.0.0.2/akile_monitor_fe.zip
     
     # 备份当前版本
     echo "备份当前版本..."
@@ -98,7 +98,7 @@ function update_monitor() {
     
     # 下载新版本
     echo "下载新版本..."
-    wget -O ak_monitor https://github.com/akile-network/akile_monitor/releases/latest/download/$MONITOR_FILE
+    wget -O ak_monitor https://github.com/Li-Xingyu/akile_monitor/releases/latest/download/$MONITOR_FILE
     chmod 777 ak_monitor
     
     # 重启服务
@@ -128,7 +128,7 @@ function update_client() {
     
     # 下载新版本
     echo "下载新版本..."
-    wget -O client https://github.com/akile-network/akile_monitor/releases/latest/download/$CLIENT_FILE
+    wget -O client https://github.com/Li-Xingyu/akile_monitor/releases/latest/download/$CLIENT_FILE
     chmod 777 client
     
     # 重启服务

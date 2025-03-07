@@ -1,6 +1,6 @@
 # Docker 部署介绍
 
-- 将前端[akile_monitor_fe](https://github.com/akile-network/akile_monitor_fe)，主控服务[ak_monitor](https://github.com/akile-network/akile_monitor)以及被控客户端[ak_client](https://github.com/akile-network/akile_monitor)打包进容器，并利用 GitHub Actions 自动构建Docker镜像并推送至Docker Hub
+- 将前端[akile_monitor_fe](https://github.com/Li-Xingyu/akile_monitor_fe)，主控服务[ak_monitor](https://github.com/Li-Xingyu/akile_monitor)以及被控客户端[ak_client](https://github.com/Li-Xingyu/akile_monitor)打包进容器，并利用 GitHub Actions 自动构建Docker镜像并推送至Docker Hub
 - 前端 端口80 主控服务端 端口3000 可自行映射到宿主机或反向代理TLS加密
 
 ## 支持架构
@@ -27,7 +27,7 @@
 
 - 如需映射配置文件，请提前创建文件并挂载至目录 `/CHANGE_PATH/akile_monitor/server/config.json:/app/config.json`
 
-- [主控服务端配置文件参考](https://github.com/akile-network/akile_monitor/blob/main/config.json)
+- [主控服务端配置文件参考](https://github.com/Li-Xingyu/akile_monitor/blob/main/config.json)
 
 ## Docker Cli 部署
 
@@ -114,7 +114,7 @@ docker compose -f fe-compose.yml up -d
 
 - 如需映射配置文件，请提前创建文件并挂载至目录 `/CHANGE_PATH/akile_monitor/client/client.json:/app/client.json`
 
-- [被控客户端配置文件参考](https://github.com/akile-network/akile_monitor/blob/main/client.json)
+- [被控客户端配置文件参考](https://github.com/Li-Xingyu/akile_monitor/blob/main/client.json)
 
 ## Docker Cli 部署
 
@@ -154,7 +154,7 @@ docker compose -f client-compose.yml up -d
 # Docker Build 本地构建镜像
 
 ```
-git clone https://github.com/akile-network/akile_monitor
+git clone https://github.com/Li-Xingyu/akile_monitor
 cd akile_monitor
 docker build --target server --tag akile_monitor_server .
 docker build --target fe --tag akile_monitor_fe .
