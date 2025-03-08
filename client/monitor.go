@@ -4,9 +4,12 @@ import (
 	"akile_monitor/client/model"
 	"context"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/docker/docker/client"
@@ -132,11 +135,17 @@ var (
 func TrackNetworkSpeed() {
 	var innerNetInTransfer, innerNetOutTransfer uint64
 	var innerIp string
-	np, err := net.Interfaces()
-	if err == nil {
-		for _, v := range np {
-			if v.Name == cfg.NetName {
-				innerIp = v.Addrs[0].Addr
+	// 先尝试获取公网IP
+	if publicIP := getPublicIP(); publicIP != "" {
+		innerIp = publicIP
+	} else {
+		// 获取失败，使用网卡IP
+		np, err := net.Interfaces()
+		if err == nil {
+			for _, v := range np {
+				if v.Name == cfg.NetName {
+					innerIp = v.Addrs[0].Addr
+				}
 			}
 		}
 	}
@@ -165,4 +174,21 @@ func TrackNetworkSpeed() {
 func Decimal(value float64) float64 {
 	value, _ = strconv.ParseFloat(fmt.Sprintf("%.2f", value), 64)
 	return value
+}
+
+func getPublicIP() string {
+	client := http.Client{
+		Timeout: 5 * time.Second,
+	}
+	resp, err := client.Get("http://api-ipv4.ip.sb/ip")
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+
+	ip, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(string(ip))
 }

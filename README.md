@@ -3,8 +3,29 @@
 ![预览图](https://github.com/Li-Xingyu/akile_monitor/blob/main/akile-monitor-cover.jpg?raw=true)
 Demo https://cpu.icu
 
+## 编译 Linux x86_64 (amd64)
+```
+GOOS=linux GOARCH=amd64 go build -o akile_client-linux-amd64 
+```
+## 编译 Linux ARM64 (aarch64)
+```
+GOOS=linux GOARCH=arm64 go build -o akile_client-linux-arm64 
+```
+## 编译 macOS x86_64 (amd64)
+```
+GOOS=darwin GOARCH=amd64 go build -o akile_client-darwin-amd64 
+```
+## 编译 macOS ARM64 (M1/M2 芯片)
 
-前端项目地址 https://github.com/Li-Xingyu/akile_monitor_fe
+```
+GOOS=darwin GOARCH=arm64 go build -o akile_client-darwin-arm64 
+```
+## 编译 Windows x86_64
+
+```
+GOOS=windows GOARCH=amd64 go build -o akile_client-windows-amd64.exe 
+```
+前端项目地址 https://github.com/akile-network/akile_monitor_fe
 
 ## [Docker部署](./DOCKER.md)
 
